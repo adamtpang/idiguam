@@ -1,41 +1,115 @@
-import { Header, Footer, Section, ProductCard } from '@/components';
+'use client';
 
-const products = [
-    { title: 'Frozen Meats', description: 'Premium beef, pork, poultry, and specialty meats for commercial kitchens.', image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=600&h=400&fit=crop', category: 'Frozen' },
-    { title: 'Seafood', description: 'Fresh and frozen seafood selections from local and international waters.', image: 'https://images.unsplash.com/photo-1498654200943-1088dd4438ae?w=600&h=400&fit=crop', category: 'Seafood' },
-    { title: 'Dairy Products', description: 'Milk, cheese, butter, and cream products for every culinary need.', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&h=400&fit=crop', category: 'Dairy' },
-    { title: 'Beverages', description: 'Juices, sodas, water, and specialty drinks for retail and food service.', image: 'https://images.unsplash.com/photo-1527960471264-932f39eb5846?w=600&h=400&fit=crop', category: 'Beverages' },
-    { title: 'Dry Goods', description: 'Rice, pasta, flour, and pantry essentials in bulk quantities.', image: 'https://images.unsplash.com/photo-1556911073-38141963c9e0?w=600&h=400&fit=crop', category: 'Pantry' },
-    { title: 'Condiments & Sauces', description: 'Oils, vinegars, sauces, and seasonings from trusted brands.', image: 'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=600&h=400&fit=crop', category: 'Condiments' },
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
+const productCategories = [
+    {
+        name: 'Air-Flown Produce',
+        image: 'https://i.postimg.cc/6QQG5pMD/fruits_and_veggies.avif',
+        pdfUrl: 'https://wixlabs-pdf-dev.appspot.com/index?pageId=o6r5t&compId=comp-kn407ng8&viewerCompId=comp-kn407ng8&siteRevision=884&viewMode=site&deviceType=desktop&locale=en&tz=Pacific%2FGuam&regionalLanguage=en&width=980&height=1730&instance=qtQ6MhHtRn1qFSMwuT660Jf-toMvHuAeiAyTzF0VmWc.eyJpbnN0YW5jZUlkIjoiY2I3MzQ4YmUtY2Y0ZC00ZWYxLWI3Y2QtNGZhYzZkYTEzMTZjIiwiYXBwRGVmSWQiOiIxM2VlMTBhMy1lY2I5LTdlZmYtNDI5OC1kMmY5ZjM0YWNmMGQiLCJtZXRhU2l0ZUlkIjoiY2RmZDE0NDktODRkMC00NjE1LTk5OWItMGJkMTg3MzkzZjNjIiwic2lnbkRhdGUiOiIyMDI1LTEyLTI2VDA2OjU3OjMxLjA3NVoiLCJkZW1vTW9kZSI6ZmFsc2UsImFpZCI6IjhiMmQzNmVlLTQ5MGQtNDY3Ny1iZDJhLWEyNWMwOTk0ZTY5YyIsImJpVG9rZW4iOiIwNjhlNWNmNy00YjlkLTA4ZTQtMmU1Ni00NDdkZWE5ODBlNTAiLCJzaXRlT3duZXJJZCI6ImMwYTZjNDZiLTcxODctNDhkNi1iZWMwLTQ4ZTA4YzcyMmYxYiIsImJzIjoiRFBzSDJfaDBhRXp5N21YQTNJWUg4V3d0M004SzBWUEswNUg1VHdrdExySSIsInNjZCI6IjIwMTktMTItMDJUMDY6NTI6MTguODUzWiJ9&currency=USD&currentCurrency=USD&commonConfig=%7B%22brand%22%3A%22wix%22%2C%22host%22%3A%22VIEWER%22%2C%22bsi%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%2C%22siteRevision%22%3A%22884%22%2C%22renderingFlow%22%3A%22NONE%22%2C%22language%22%3A%22en%22%2C%22locale%22%3A%22en-gu%22%2C%22BSI%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%7D&currentRoute=.%2Fair-flown-produce&vsi=f84c3dc2-1487-40d3-87a0-f93367f87a7e',
+    },
+    {
+        name: 'Fresh Produce',
+        image: 'https://i.postimg.cc/VNNbLkKh/veggies.avif',
+        pdfUrl: 'https://wixlabs-pdf-dev.appspot.com/index?pageId=vgjz1&compId=comp-kn3zsnm0&viewerCompId=comp-kn3zsnm0&siteRevision=884&viewMode=site&deviceType=desktop&locale=en&tz=Pacific%2FGuam&regionalLanguage=en&width=980&height=1960&instance=GmeIO4XcQcC7E18vhuElpF-fDnuO9yUKsyjzccmyY_U.eyJpbnN0YW5jZUlkIjoiY2I3MzQ4YmUtY2Y0ZC00ZWYxLWI3Y2QtNGZhYzZkYTEzMTZjIiwiYXBwRGVmSWQiOiIxM2VlMTBhMy1lY2I5LTdlZmYtNDI5OC1kMmY5ZjM0YWNmMGQiLCJtZXRhU2l0ZUlkIjoiY2RmZDE0NDktODRkMC00NjE1LTk5OWItMGJkMTg3MzkzZjNjIiwic2lnbkRhdGUiOiIyMDI1LTEyLTI2VDA2OjU3OjI2LjgwNFoiLCJkZW1vTW9kZSI6ZmFsc2UsImFpZCI6IjhiMmQzNmVlLTQ5MGQtNDY3Ny1iZDJhLWEyNWMwOTk0ZTY5YyIsImJpVG9rZW4iOiIwNjhlNWNmNy00YjlkLTA4ZTQtMmU1Ni00NDdkZWE5ODBlNTAiLCJzaXRlT3duZXJJZCI6ImMwYTZjNDZiLTcxODctNDhkNi1iZWMwLTQ4ZTA4YzcyMmYxYiIsImJzIjoiRFBzSDJfaDBhRXp5N21YQTNJWUg4V3d0M004SzBWUEswNUg1VHdrdExySSIsInNjZCI6IjIwMTktMTItMDJUMDY6NTI6MTguODUzWiJ9&currency=USD&currentCurrency=USD&commonConfig=%7B%22brand%22%3A%22wix%22%2C%22host%22%3A%22VIEWER%22%2C%22bsi%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%2C%22siteRevision%22%3A%22884%22%2C%22renderingFlow%22%3A%22NONE%22%2C%22language%22%3A%22en%22%2C%22locale%22%3A%22en-gu%22%2C%22BSI%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%7D&currentRoute=.%2Fproduce&vsi=6bfee54c-8d6d-4bf2-8d88-eff36c594b92',
+    },
+    {
+        name: 'Frozen Products',
+        image: 'https://i.postimg.cc/9ffqFQLK/seafood.avif',
+        pdfUrl: 'https://wixlabs-pdf-dev.appspot.com/index?pageId=d5juu&compId=comp-kn407tmg&viewerCompId=comp-kn407tmg&siteRevision=884&viewMode=site&deviceType=desktop&locale=en&tz=Pacific%2FGuam&regionalLanguage=en&width=980&height=1790&instance=M5v0B1OWfNw9WQaYEvTZ9_E44D6QPC0WF8VyfSUn8hI.eyJpbnN0YW5jZUlkIjoiY2I3MzQ4YmUtY2Y0ZC00ZWYxLWI3Y2QtNGZhYzZkYTEzMTZjIiwiYXBwRGVmSWQiOiIxM2VlMTBhMy1lY2I5LTdlZmYtNDI5OC1kMmY5ZjM0YWNmMGQiLCJtZXRhU2l0ZUlkIjoiY2RmZDE0NDktODRkMC00NjE1LTk5OWItMGJkMTg3MzkzZjNjIiwic2lnbkRhdGUiOiIyMDI1LTEyLTI2VDA2OjU3OjM0Ljc4MFoiLCJkZW1vTW9kZSI6ZmFsc2UsImFpZCI6IjhiMmQzNmVlLTQ5MGQtNDY3Ny1iZDJhLWEyNWMwOTk0ZTY5YyIsImJpVG9rZW4iOiIwNjhlNWNmNy00YjlkLTA4ZTQtMmU1Ni00NDdkZWE5ODBlNTAiLCJzaXRlT3duZXJJZCI6ImMwYTZjNDZiLTcxODctNDhkNi1iZWMwLTQ4ZTA4YzcyMmYxYiIsImJzIjoiRFBzSDJfaDBhRXp5N21YQTNJWUg4V3d0M004SzBWUEswNUg1VHdrdExySSIsInNjZCI6IjIwMTktMTItMDJUMDY6NTI6MTguODUzWiJ9&currency=USD&currentCurrency=USD&commonConfig=%7B%22brand%22%3A%22wix%22%2C%22host%22%3A%22VIEWER%22%2C%22bsi%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%2C%22siteRevision%22%3A%22884%22%2C%22renderingFlow%22%3A%22NONE%22%2C%22language%22%3A%22en%22%2C%22locale%22%3A%22en-gu%22%2C%22BSI%22%3A%2275d35af6-f445-4d14-87e7-c4d9ab5b3fe2%7C1%22%7D&currentRoute=.%2Ffreeze-products&vsi=195ff3fa-d601-41f6-b333-66acc7d234b6',
+    },
+    {
+        name: 'Pastries & Bakery',
+        image: 'https://i.postimg.cc/FKKJsHTq/pastries.avif',
+        pdfUrl: null,
+    },
 ];
 
 export default function ProductsPage() {
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const selectedProduct = productCategories.find(p => p.name === selectedCategory);
+
     return (
         <>
             <Header />
 
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28" style={{ background: `linear-gradient(to bottom, #00254a 0%, #003366 100%)` }}>
-                <div className="max-w-4xl mx-auto px-4 text-center">
-                    <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl text-gold mb-6">Our Products</h1>
-                    <p className="font-accent text-cyan text-sm md:text-base uppercase tracking-widest mb-4">Quality Selection for Every Business</p>
-                    <p className="text-white/80 font-body text-lg max-w-2xl mx-auto">
-                        Browse our comprehensive catalog of quality food products. Ready to order? Visit our online portal for pricing and availability.
-                    </p>
-                </div>
-            </section>
+            <main className="pt-16 min-h-screen bg-white">
+                {/* Header */}
+                <section className="py-8 px-4 text-center bg-[#2a2a2a]">
+                    <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-heading text-2xl md:text-3xl text-white font-bold">
+                        Products
+                    </motion.h1>
+                </section>
 
-            <Section background="pattern">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {products.map((product, index) => (
-                        <ProductCard key={index} {...product} />
-                    ))}
-                </div>
+                {/* Categories */}
+                <section className="py-8 px-4">
+                    <div className="max-w-5xl mx-auto">
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+                            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+                        >
+                            {productCategories.map((cat) => (
+                                <motion.button
+                                    key={cat.name}
+                                    variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setSelectedCategory(cat.name)}
+                                    className={`relative aspect-square rounded-lg overflow-hidden shadow-lg ${selectedCategory === cat.name ? 'ring-4 ring-[#2a2a2a]' : ''}`}
+                                >
+                                    <img src={cat.image} alt={cat.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                                    <span className="absolute bottom-0 left-0 right-0 p-3 text-white font-heading text-sm font-semibold">{cat.name}</span>
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
 
-                <div className="text-center mt-16">
-                    <p className="text-navy/70 font-body mb-6">Ready to place an order? Access our full catalog with pricing.</p>
-                    <a href="https://idiorder.zite.so" target="_blank" rel="noopener noreferrer" className="btn-secondary">Go to Order Portal</a>
-                </div>
-            </Section>
+                {/* PDF Viewer */}
+                <AnimatePresence>
+                    {selectedProduct && (
+                        <motion.section
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="py-6 px-4 bg-gray-50 overflow-hidden"
+                        >
+                            <div className="max-w-5xl mx-auto">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="font-heading text-lg font-bold">{selectedProduct.name}</h2>
+                                    <button onClick={() => setSelectedCategory(null)} className="text-gray-500 hover:text-black">
+                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                                {selectedProduct.pdfUrl ? (
+                                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                                        <iframe src={selectedProduct.pdfUrl} className="w-full h-[600px] md:h-[800px] border-0" title={selectedProduct.name} />
+                                    </div>
+                                ) : (
+                                    <div className="bg-white rounded-lg shadow-lg p-8 text-center text-gray-500">Coming soon</div>
+                                )}
+                            </div>
+                        </motion.section>
+                    )}
+                </AnimatePresence>
+
+                {/* Order Portal Embed */}
+                <section className="py-8 px-4">
+                    <div className="max-w-5xl mx-auto">
+                        <h2 className="font-heading text-xl font-bold text-center mb-6">Order Online</h2>
+                        <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+                            <iframe src="https://idiorder.zite.so" className="w-full h-[600px] border-0" title="IDI Order Portal" />
+                        </div>
+                    </div>
+                </section>
+            </main>
 
             <Footer />
         </>

@@ -4,50 +4,43 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const navigation = [
-    { name: 'Home', href: '/' },
     { name: 'Products', href: '/products' },
-    { name: 'Produce', href: '/produce' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Careers', href: '/careers' },
 ];
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur-sm">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#2a2a2a]">
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-20 items-center justify-between">
-                    <Link href="/" className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
-                            <span className="font-heading text-navy text-xl font-bold">IDI</span>
-                        </div>
-                        <span className="hidden sm:block font-heading text-2xl text-gold">IDI Guam</span>
+                <div className="flex h-16 items-center justify-between">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center">
+                        <img
+                            src="https://i.postimg.cc/Gtd7LZyK/image.png"
+                            alt="International Distributors"
+                            className="h-10 w-auto"
+                        />
                     </Link>
 
+                    {/* Desktop Nav */}
                     <div className="hidden md:flex items-center gap-8">
                         {navigation.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="text-cyan font-body text-sm uppercase tracking-wider hover:text-gold transition-colors duration-200"
+                                className="font-body text-sm uppercase tracking-wider text-[#fafafa] hover:text-[#8b8b8b] transition-colors duration-200"
                             >
                                 {item.name}
                             </Link>
                         ))}
-                        <a
-                            href="https://idiorder.zite.so"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-primary"
-                        >
-                            Order Now
-                        </a>
                     </div>
 
+                    {/* Mobile menu button */}
                     <button
                         type="button"
-                        className="md:hidden text-gold p-2"
+                        className="md:hidden p-2 text-[#fafafa]"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         <span className="sr-only">Toggle menu</span>
@@ -61,27 +54,20 @@ export default function Header() {
                     </button>
                 </div>
 
+                {/* Mobile Menu */}
                 {mobileMenuOpen && (
-                    <div className="md:hidden py-4 border-t border-gold/20">
+                    <div className="md:hidden py-4 border-t border-[#8b8b8b]/30">
                         <div className="flex flex-col gap-4">
                             {navigation.map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="text-cyan font-body text-lg uppercase tracking-wider hover:text-gold transition-colors duration-200"
+                                    className="font-body text-lg uppercase tracking-wider text-[#fafafa] hover:text-[#8b8b8b] transition-colors"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     {item.name}
                                 </Link>
                             ))}
-                            <a
-                                href="https://idiorder.zite.so"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-primary w-fit"
-                            >
-                                Order Now
-                            </a>
                         </div>
                     </div>
                 )}
